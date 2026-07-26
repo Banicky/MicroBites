@@ -1,0 +1,130 @@
+.home {
+  min-height: 100vh;
+  background-color: bisque;
+  display: flex;
+  flex-direction: column;
+  color: #1a1a1a;
+  font-family: 'Comic Sans MS', 'Segoe UI', system-ui, sans-serif;
+  box-sizing: border-box;
+}
+
+.home-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 32px 48px;
+}
+
+.home-logo {
+  font-size: 28px;
+  line-height: 1;
+}
+
+.home-brand {
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.home-main {
+  flex: 1;
+  width: 100%;
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 40px 24px 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  text-align: center;
+}
+
+.home-title {
+  font-size: 44px;
+  font-weight: 800;
+  margin: 0;
+}
+
+.home-subtitle {
+  font-size: 17px;
+  color: #6b5a45;
+  margin: 0;
+}
+
+.home-form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.home-textarea {
+  width: 100%;
+  min-height: 120px;
+  box-sizing: border-box;
+  border: 2px solid #1a1a1a;
+  border-radius: 20px;
+  background: #fff;
+  padding: 20px;
+  font-family: inherit;
+  font-size: 16px;
+  color: #1a1a1a;
+  text-align: left;
+  resize: vertical;
+}
+
+.home-textarea::placeholder {
+  color: #8a7a63;
+}
+
+.home-textarea:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(26, 26, 26, 0.15);
+}
+
+.home-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.home-submit {
+  background: #1a1a1a;
+  color: #fff;
+  border: none;
+  border-radius: 14px;
+  padding: 14px 28px;
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.home-submit:hover {
+  background: #333;
+}
+
+.home-quick-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.home-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #fff;
+  border: 2px solid #1a1a1a;
+  border-radius: 999px;
+  padding: 10px 22px;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  color: #1a1a1a;
+  cursor: pointer;
+}
+
+.home-pill:hover {
+  background: #fff7ee;
+}
