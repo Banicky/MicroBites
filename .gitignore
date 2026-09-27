@@ -4,3 +4,6 @@
 venv/
 node_modules/
 __pycache__/
+
+dataset/
+.claude/
