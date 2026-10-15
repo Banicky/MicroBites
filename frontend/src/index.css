@@ -1,7 +1,20 @@
 :root {
     background-color: bisque;
+    --surface: #fffaf3;
+    --border: #e3cfb4;
+    --muted: #6b5d4f;
+    --accent: #c2410c;
+    --tag: #f6e3c8;
+    --placeholder: #ecd9bf;
+    color: #2b2118;
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
 }
 
 * {
     box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background-color: bisque;
 }
