@@ -1,0 +1,69 @@
+name: Deploy backend
+
+on:
+  push:
+    branches: [dev]
+    paths: ["backend/**", ".github/workflows/backend.yml"]
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+concurrency:
+  group: deploy-backend
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      INSTANCE_ID: ${{ vars.EC2_INSTANCE_ID }}
+    steps:
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      # Runs on the instance through SSM (no inbound SSH needed). SSM runs as root,
+      # so git and pip run as ec2-user, which owns the checkout and its GitHub SSH key.
+      # The checkout is reset to the pushed commit; backend/.env is gitignored and survives.
+      - name: Deploy over SSM
+        run: |
+          cat > script.sh <<'EOF'
+          set -euo pipefail
+          APP=/home/ec2-user/microbites
+          sudo -iu ec2-user git -C "$APP" fetch --quiet origin dev
+          sudo -iu ec2-user git -C "$APP" reset --hard "__SHA__"
+          sudo -iu ec2-user "$APP/backend/venv/bin/pip" install --quiet -r "$APP/backend/requirements.txt"
+          systemctl restart microbites
+          for i in $(seq 1 20); do
+            if curl -fsS -o /dev/null http://127.0.0.1:8000/openapi.json; then
+              echo "API healthy at $(sudo -iu ec2-user git -C "$APP" rev-parse --short HEAD)"
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "API did not come up" >&2
+          journalctl -u microbites -n 50 --no-pager >&2
+          exit 1
+          EOF
+          sed -i "s/__SHA__/${GITHUB_SHA}/" script.sh
+
+          PARAMS=$(jq -Rs '{commands: (split("\n") | map(select(length > 0)))}' script.sh)
+          CMD_ID=$(aws ssm send-command \
+            --instance-ids "$INSTANCE_ID" \
+            --document-name AWS-RunShellScript \
+            --comment "deploy ${GITHUB_SHA::7}" \
+            --parameters "$PARAMS" \
+            --query Command.CommandId --output text)
+          echo "SSM command $CMD_ID"
+
+          aws ssm wait command-executed --command-id "$CMD_ID" --instance-id "$INSTANCE_ID" || true
+
+          aws ssm get-command-invocation --command-id "$CMD_ID" --instance-id "$INSTANCE_ID" \
+            --query '[StandardOutputContent, StandardErrorContent]' --output text
+          STATUS=$(aws ssm get-command-invocation --command-id "$CMD_ID" --instance-id "$INSTANCE_ID" \
+            --query Status --output text)
+          echo "Status: $STATUS"
+          [ "$STATUS" = "Success" ]
