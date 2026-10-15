@@ -7,12 +7,15 @@ from psycopg2.pool import ThreadedConnectionPool
 
 load_dotenv()
 
+# Defaults match the local development database; set these in production (e.g. for RDS)
 DB_CONFIG = dict(
-    dbname="microbites_db",
-    user="banicky",
+    dbname=os.environ.get("DB_NAME", "microbites_db"),
+    user=os.environ.get("DB_USER", "banicky"),
     password=os.environ.get("DB_PASSWORD"),
-    host="localhost",
-    port=5433,
+    host=os.environ.get("DB_HOST", "localhost"),
+    port=int(os.environ.get("DB_PORT", "5433")),
+    # "require" encrypts the connection; use it for RDS. "prefer" uses SSL only when the server offers it.
+    sslmode=os.environ.get("DB_SSLMODE", "prefer"),
 )
 
 
