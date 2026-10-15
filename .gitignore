@@ -8,3 +8,6 @@ __pycache__/
 dataset/
 .claude/
 db_schema.sql
+
+*.dump
+aws_connect.txt
