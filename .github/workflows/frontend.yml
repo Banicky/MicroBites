@@ -1,3 +1,8 @@
+# Runs npm run build to create a new react build
+# Upload dist/ contents to s3 bucket
+# Invalidate cloudfront's cache so new files are serves immediately to end users
+
+
 name: Deploy frontend
 
 on:

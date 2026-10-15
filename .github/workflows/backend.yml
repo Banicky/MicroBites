@@ -1,3 +1,8 @@
+# Fetches from origin dev and cals git reset --hard to reset changes as ec2-user
+# Installs requirements.txt inton backend/venv
+# systemctl restart microbites
+
+
 name: Deploy backend
 
 on:
